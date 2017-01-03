@@ -19,12 +19,21 @@ def main():
         github API for repo link or os.system(git get-url master)....
     """
 
+    readmetxt = open("README.md", "r")
+    readmemd = open("output.md", "w")
+    lines = readmetxt.readlines()
+    for line in lines:
+        print(line)
+        readmemd.write(line + "<br>")
+
+    readmemd.flush()
+    readmemd.close()
+    readmetxt.close()
+
     repo_url = get_repo_url()
     print(repo_url)
     api_url = get_api_url(repo_url)
     print(api_url)
-
-
 
 
 def get_repo_url():

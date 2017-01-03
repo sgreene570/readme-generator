@@ -26,10 +26,11 @@ def main():
     for x in range (len(lines)):
         if (x + 1 < len(lines) and len(lines[x]) > 2  and lines[x][-2] == ":" 
             and lines[x+1] == "\n"):
-            readmemd.write("#" + lines[x] + "<br>")
+            readmemd.write("# " + lines[x] + "<br>")
             x += 1
         else:
             readmemd.write(lines[x] + "<br>")
+        readmemd.write("\n")
 
     repo_url = get_repo_url()
     api_url = get_api_url(repo_url)

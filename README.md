@@ -1,6 +1,6 @@
 # readme-generator
 <br>Convert those boring plain text readmes to github markdown automagically
-<br>#Usage:
+# Usage:
 <br>
 <br><code>python 3 converter.py</code>
 <br>The script will automagically find you README.md and place the completed file in OUTPUT.md.

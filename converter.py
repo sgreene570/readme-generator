@@ -26,7 +26,7 @@ def main():
     for x in range (len(lines)):
         if (x + 1 < len(lines) and len(lines[x]) > 2  and lines[x][-2] == ":" 
             and lines[x+1] == "\n"):
-            readmemd.write("# " + lines[x] + "<br>")
+            readmemd.write("# " + lines[x])
             x += 1
         else:
             readmemd.write(lines[x] + "<br>")

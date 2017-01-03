@@ -6,6 +6,7 @@ Authors: Stephen Greene and Matt Dwoncyzk
 
 
 import subprocess
+import requests
 
 
 def main():
@@ -22,18 +23,22 @@ def main():
     readmetxt = open("README.md", "r")
     readmemd = open("output.md", "w")
     lines = readmetxt.readlines()
-    for line in lines:
-        print(line)
-        readmemd.write(line + "<br>")
+    for x in range (len(lines)):
+        if (x + 1 < len(lines) and len(lines[x]) > 2  and lines[x][-2] == ":" 
+            and lines[x+1] == "\n"):
+            readmemd.write("#" + lines[x] + "<br>")
+            x += 1
+        else:
+            readmemd.write(lines[x] + "<br>")
+
+    repo_url = get_repo_url()
+    api_url = get_api_url(repo_url)
+    languages = requests.get(api_url + "/languages")
+    readmemd.write(str(languages.json()))
 
     readmemd.flush()
     readmemd.close()
     readmetxt.close()
-
-    repo_url = get_repo_url()
-    print(repo_url)
-    api_url = get_api_url(repo_url)
-    print(api_url)
 
 
 def get_repo_url():

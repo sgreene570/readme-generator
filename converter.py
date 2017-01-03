@@ -38,7 +38,7 @@ def get_repo_url():
 def get_api_url(repo_url):
     api_url = None
     # If the remote is set for SSH keys
-    if repo_url[:2] == "git":
+    if repo_url[:3] == "git":
         api_url = ("https://api.github.com/repos/" +
             repo_url[repo_url.index(":") + 1: -3])
     # If the remote is set for http/https

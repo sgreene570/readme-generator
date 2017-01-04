@@ -1,7 +1,7 @@
 """
 converter.py
 Convert those silly plain text readmes to markdown easily!
-Authors: Stephen Greene and Matt Dwoncyzk
+Authors: Stephen Greene
 """
 
 
@@ -24,7 +24,7 @@ def main():
     readmemd = open("output.md", "w")
     lines = readmetxt.readlines()
     for x in range (len(lines)):
-        if (x + 1 < len(lines) and len(lines[x]) > 2  and lines[x][-2] == ":" 
+        if (x + 1 < len(lines) and len(lines[x]) > 2  and lines[x][-2] == ":"
             and lines[x+1] == "\n"):
             readmemd.write("# " + lines[x])
             x += 1
@@ -36,6 +36,7 @@ def main():
     api_url = get_api_url(repo_url)
     languages = requests.get(api_url + "/languages")
     readmemd.write(str(languages.json()))
+    repo_contents = requests.get(api_url + "/contents")
 
     readmemd.flush()
     readmemd.close()
@@ -45,13 +46,13 @@ def main():
 def get_repo_url():
     # Get the repo origin remote via command line (is there a better way?)
     repo_url = str(subprocess.check_output("git remote get-url origin",
-         shell=True))
+        shell=True))
     repo_url = repo_url[repo_url.index("'") + 1: -3]
     return repo_url
 
 
 def get_api_url(repo_url):
-    api_url = None
+    rapi_url = None
     # If the remote is set for SSH keys
     if repo_url[:3] == "git":
         api_url = ("https://api.github.com/repos/" +
@@ -62,6 +63,11 @@ def get_api_url(repo_url):
             repo_url[repo_url.index(".com/") + 5:])
 
     return api_url
+
+
+def get_raw_files(repo_contents):
+    # scrape the repo_contents response object for all of the names of the
+    # available files in the repo and return them in a list.
 
 
 if __name__ == "__main__":

@@ -37,6 +37,7 @@ def main():
     languages = requests.get(api_url + "/languages")
     readmemd.write(str(languages.json()))
     repo_contents = requests.get(api_url + "/contents")
+    raw_files = get_raw_files(repo_contents)
 
     readmemd.flush()
     readmemd.close()
@@ -52,7 +53,7 @@ def get_repo_url():
 
 
 def get_api_url(repo_url):
-    rapi_url = None
+    api_url = None
     # If the remote is set for SSH keys
     if repo_url[:3] == "git":
         api_url = ("https://api.github.com/repos/" +
@@ -68,6 +69,13 @@ def get_api_url(repo_url):
 def get_raw_files(repo_contents):
     # scrape the repo_contents response object for all of the names of the
     # available files in the repo and return them in a list.
+    contents = repo_contents.json()
+    raw_files = list()
+    for x in range(len(contents)):
+        raw_files.append(contents[x]["download_url"])
+
+    print(raw_files)
+    return(raw_files)
 
 
 if __name__ == "__main__":

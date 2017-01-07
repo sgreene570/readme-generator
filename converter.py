@@ -7,6 +7,8 @@ Authors: Stephen Greene
 
 import subprocess
 import requests
+import urllib.request as urllib
+import json
 
 
 def main():
@@ -38,6 +40,7 @@ def main():
     readmemd.write(str(languages.json()))
     repo_contents = requests.get(api_url + "/contents")
     raw_files = get_raw_files(repo_contents)
+    find_in_file("TEST", raw_files)
 
     readmemd.flush()
     readmemd.close()
@@ -70,12 +73,20 @@ def get_raw_files(repo_contents):
     # scrape the repo_contents response object for all of the names of the
     # available files in the repo and return them in a list.
     contents = repo_contents.json()
+    print(contents)
     raw_files = list()
     for x in range(len(contents)):
-        raw_files.append(contents[x]["download_url"])
+        raw_files.append(contents[x].get("download_url"))
 
     print(raw_files)
     return(raw_files)
+
+
+def find_in_file(string, raw_files):
+    for url in raw_files:
+        response = urllib.urlopen(url)
+        print(response)
+        data = json.loads(response.read().decode())
 
 
 if __name__ == "__main__":

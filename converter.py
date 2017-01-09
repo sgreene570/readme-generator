@@ -39,7 +39,13 @@ def main():
     readmemd.write(str(languages.json()))
     repo_contents = requests.get(api_url + "/contents")
     raw_files = get_raw_files(repo_contents)
-    find_in_file("TEST", raw_files)
+    for file_url in raw_files:
+        print(file_url)
+        line_number = find_in_file(file_url, "boring")
+        if line_number is not None:
+            print(line_number)
+            break
+
 
     readmemd.flush()
     readmemd.close()
@@ -47,7 +53,7 @@ def main():
 
 
 def get_repo_url():
-    # Get the repo origin remote via command line (is there a better way?)
+    # Get the repo origin remote url via command line (is there a better way?)
     repo_url = str(subprocess.check_output("git remote get-url origin",
         shell=True))
     repo_url = repo_url[repo_url.index("'") + 1: -3]
@@ -56,11 +62,11 @@ def get_repo_url():
 
 def get_api_url(repo_url):
     api_url = None
-    # If the remote is set for SSH keys
+    # If the remote url is set for SSH keys
     if repo_url[:3] == "git":
         api_url = ("https://api.github.com/repos/" +
             repo_url[repo_url.index(":") + 1: -3])
-    # If the remote is set for http/https
+    # If the remote url is set for http/https
     elif repo_url[:4] == "http":
         api_url = ("https://api.github.com/repos/" +
             repo_url[repo_url.index(".com/") + 5:])
@@ -80,9 +86,12 @@ def get_raw_files(repo_contents):
     return(raw_files)
 
 
-def find_in_file(string, raw_files):
-    for url in raw_files:
-        code = requests.get(url).text
+def find_in_file(file_url, string):
+    # find the location of the given string in the given file url
+    # returns the line number of the string if found
+    code = requests.get(file_url).text
+    if string in code:
+        return code[:code.index(string)].count("\n") + 1
 
 
 if __name__ == "__main__":

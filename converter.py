@@ -31,19 +31,24 @@ def main():
     lines = readmetxt.readlines()
     for x in range (len(lines)):
         line = lines[x]
-        for x in range(len(line)):
-            if line[x]  == "_" and line[x:].count("_") > 1:
-                find_string = line[x + 1:line[x+1:].index("_") + x + 1]
+        for y in range(len(line)):
+            if line[y]  == "_" and line[y+1:].count("_") % 2 == 1:
+                find_string = line[y+1:line[y+1:].index("_") + y+1]
                 print(find_string)
                 for file_url in raw_files:
                     line_number = find_in_file(file_url, find_string)
                     if line_number is not None:
-                        print(repo_contents.json()[raw_files.index(file_url)]["html_url"] + "#" + str(line_number))
-                        x += len(find_string)
+                        print(line_number)
+                        lines[x] = (line[:y-1] + "<a href=" + 
+                            repo_contents.json()[raw_files.index(file_url)]
+                            ["html_url"] + "#" + str(line_number) + ">" +
+                            line[y+1:y+len(find_string)+1] + "</a>" + 
+                            line[y+len(find_string)+2:])
                         break
 
-        if (x + 1 < len(lines) and len(line) > 2  and line[-2] == ":"
-            and lines[x + 1] == "\n"):
+        line = lines[x]     # update the pointer
+        if (x+1 < len(lines) and len(line) > 2  and line[-2] == ":"
+            and lines[x+1] == "\n"):
             readmemd.write("# " + line)
             x += 1
         else:

@@ -91,7 +91,8 @@ def get_raw_files(repo_contents):
     contents = repo_contents.json()
     raw_files = list()
     for x in range(len(contents)):
-        raw_files.append(contents[x].get("download_url"))
+        if contents[x]["name"] != "README.md":
+            raw_files.append(contents[x].get("download_url"))
 
     print(raw_files)
     return(raw_files)

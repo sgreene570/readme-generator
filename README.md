@@ -20,8 +20,8 @@ Lines that end with a colon and have a blank padding line below will become mark
 <br>
 This readme was generated with the script!
 <br>
-Test to see if the find functionality works:<a href=https://github.com/sgreene570/readme-generator/blob/master/README.md#15>Ideas</a>
+Test to see if the find functionality works:<a href=https://github.com/sgreene570/readme-generator/blob/master/converter.py#15>Ideas</a>
 <br>
 Putting words in underscores tells the script to find the occourence of the word in the repo and return the url to that specific line of code.
 <br>
-{'Python': 3488}
+{'Python': 3539}

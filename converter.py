@@ -40,7 +40,7 @@ def main():
                     if line_number is not None:
                         print(line_number)
                         lines[x] = (line[:y-1] + "<a href=" + 
-                            repo_contents.json()[raw_files.index(file_url)]
+                            repo_contents.json()[raw_files.index(file_url) + 1]
                             ["html_url"] + "#" + str(line_number) + ">" +
                             line[y+1:y+len(find_string)+1] + "</a>" + 
                             line[y+len(find_string)+2:])

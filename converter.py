@@ -21,31 +21,37 @@ def main():
         github API for repo link or os.system(git get-url master)....
     """
 
+    repo_url = get_repo_url()
+    api_url = get_api_url(repo_url)
+    repo_contents = requests.get(api_url + "/contents")
+    raw_files = get_raw_files(repo_contents)
+
     readmetxt = open("README.md", "r")
     readmemd = open("output.md", "w")
     lines = readmetxt.readlines()
     for x in range (len(lines)):
-        if (x + 1 < len(lines) and len(lines[x]) > 2  and lines[x][-2] == ":"
-            and lines[x+1] == "\n"):
-            readmemd.write("# " + lines[x])
+        line = lines[x]
+        for x in range(len(line)):
+            if line[x]  == "_" and line[x:].count("_") > 1:
+                find_string = line[x + 1:line[x+1:].index("_") + x + 1]
+                print(find_string)
+                for file_url in raw_files:
+                    line_number = find_in_file(file_url, find_string)
+                    if line_number is not None:
+                        print(repo_contents.json()[raw_files.index(file_url)]["html_url"] + "#" + str(line_number))
+                        x += len(find_string)
+                        break
+
+        if (x + 1 < len(lines) and len(line) > 2  and line[-2] == ":"
+            and lines[x + 1] == "\n"):
+            readmemd.write("# " + line)
             x += 1
         else:
-            readmemd.write(lines[x] + "<br>")
+            readmemd.write(line + "<br>")
         readmemd.write("\n")
 
-    repo_url = get_repo_url()
-    api_url = get_api_url(repo_url)
     languages = requests.get(api_url + "/languages")
     readmemd.write(str(languages.json()))
-    repo_contents = requests.get(api_url + "/contents")
-    raw_files = get_raw_files(repo_contents)
-    for file_url in raw_files:
-        print(file_url)
-        line_number = find_in_file(file_url, "boring")
-        if line_number is not None:
-            print(line_number)
-            break
-
 
     readmemd.flush()
     readmemd.close()

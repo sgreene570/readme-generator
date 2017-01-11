@@ -15,3 +15,8 @@ Lines that end with a colon and have a blank padding line below will become mark
 This readme was generated with the script!
 <br>
 {'Python': 1610}
+<br>
+Test to see if the find functionality works: _Ideas_
+<br>
+Putting words in underscores tells the script to find the occourence of the word in the repo and return the url to that specific line of code.
+

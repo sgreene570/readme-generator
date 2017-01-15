@@ -10,54 +10,59 @@ import requests
 import json
 
 
+NEWLINE = "\n"
+NEWLINE_MD = "<br>"
+HEADING_MD = "#"
+LINK_CHAR = "_"
+INPUT_FILE = "README.md"
+OUTPUT_FILE = "OUTPUT.md"
+
+
 def main():
-    """
-    Ideas so far:
-    1) new lines == <br>
-    2) 2 new lines will make the top line a heading (#)
-    3) Somehow figure out which language(s) the repo is using
-        Github API or file extensions?
-    4) Have segments of written code auto hot link to the actual line in repo
-        github API for repo link or os.system(git get-url master)....
-    """
 
     repo_url = get_repo_url()
     api_url = get_api_url(repo_url)
     repo_contents = requests.get(api_url + "/contents")
-    raw_files = get_raw_files(repo_contents)
+    raw_files = get_raw_files(repo_contents)    # List of available files
 
-    readmetxt = open("README.md", "r")
-    readmemd = open("output.md", "w")
+    readmetxt = open(INPUT_FILE, "r")
+    readmemd = open(OUTPUT_FILE, "w")
     lines = readmetxt.readlines()
     for x in range (len(lines)):
-        line = lines[x]
-        for y in range(len(line)):
-            if line[y]  == "_" and line[y+1:].count("_") % 2 == 1:
-                find_string = line[y+1:line[y+1:].index("_") + y+1]
+        line = lines[x]     # create a copy of the current line
+        for y in range(len(line)):      #Iterate over each char
+            # Check if a line has LINK_CHARs to denote url zone
+            if line[y]  == LINK_CHAR and line[y+1:].count(LINK_CHAR) % 2 == 1:
+                find_string = line[y+1:line[y+1:].index(LINK_CHAR) + y+1]
                 print(find_string)
                 for file_url in raw_files:
                     line_number = find_in_file(file_url, find_string)
                     if line_number is not None:
                         print(line_number)
-                        lines[x] = (line[:y-1] + "<a href=" + 
+                        # Insert the href link to the correct line number
+                        lines[x] = (line[:y-1] + "<a href=" +
                             repo_contents.json()[raw_files.index(file_url) + 1]
                             ["html_url"] + "#L" + str(line_number) + ">" +
-                            line[y+1:y+len(find_string)+1] + "</a>" + 
+                            line[y+1:y+len(find_string)+1] + "</a>" +
                             line[y+len(find_string)+2:])
                         break
 
-        line = lines[x]     # update the pointer
+        line = lines[x]     # update the copied line
+        # If line is a heading
         if (x+1 < len(lines) and len(line) > 2  and line[-2] == ":"
-            and lines[x+1] == "\n"):
-            readmemd.write("# " + line)
+            and lines[x+1] == NEWLINE):
+            readmemd.write(HEADING_MD + line)
             x += 1
         else:
-            readmemd.write(line + "<br>")
-        readmemd.write("\n")
+            readmemd.write(line + NEWLINE_MD)
+        # Insert a normal new line for viewing the markdown file in a text editor
+        readmemd.write(NEWLINE)
 
+    # Add repo language info at the bottom
     languages = requests.get(api_url + "/languages")
     readmemd.write(str(languages.json()))
 
+    # Wrap up file IO
     readmemd.flush()
     readmemd.close()
     readmetxt.close()
@@ -91,7 +96,7 @@ def get_raw_files(repo_contents):
     contents = repo_contents.json()
     raw_files = list()
     for x in range(len(contents)):
-        if contents[x]["name"] != "README.md":
+        if contents[x]["name"] != "README.md":          # Skip the readme
             raw_files.append(contents[x].get("download_url"))
 
     print(raw_files)
@@ -103,7 +108,7 @@ def find_in_file(file_url, string):
     # returns the line number of the string if found
     code = requests.get(file_url).text
     if string in code:
-        return code[:code.index(string)].count("\n") + 1
+        return code[:code.index(string)].count(NEWLINE) + 1
 
 
 if __name__ == "__main__":

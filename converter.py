@@ -14,10 +14,10 @@ import json
 NEWLINE = "\n"
 NEWLINE_MD = "<br>"
 HEADING_MD = "#"
-# Character used to enclose code segments where href tags should be inserted
-LINK_CHAR = "_"     
 INPUT_FILE = "README.md"
 OUTPUT_FILE = "OUTPUT.md"
+# Character used to enclose code segments where href tags should be inserted
+LINK_CHAR = "_"     
 
 
 def main():

@@ -8,7 +8,7 @@ Convert those boring plain text readmes to github markdown automagically
 
 
 <br>
-<code>python 3 converter.py</code>
+<code>python3 converter.py</code> (within a github repo's directory)
 <br>
 The script will automagically find you README.md and place the completed file in OUTPUT.md.
 <br>

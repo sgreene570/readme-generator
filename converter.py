@@ -10,16 +10,17 @@ import requests
 import json
 
 
+# Important strings
 NEWLINE = "\n"
 NEWLINE_MD = "<br>"
 HEADING_MD = "#"
-LINK_CHAR = "_"
+# Character used to enclose code segments where href tags should be inserted
+LINK_CHAR = "_"     
 INPUT_FILE = "README.md"
 OUTPUT_FILE = "OUTPUT.md"
 
 
 def main():
-
     repo_url = get_repo_url()
     api_url = get_api_url(repo_url)
     repo_contents = requests.get(api_url + "/contents")
@@ -28,6 +29,7 @@ def main():
     readmetxt = open(INPUT_FILE, "r")
     readmemd = open(OUTPUT_FILE, "w")
     lines = readmetxt.readlines()
+
     for x in range (len(lines)):
         line = lines[x]     # create a copy of the current line
         for y in range(len(line)):      #Iterate over each char

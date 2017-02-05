@@ -1,53 +1,25 @@
 #readme-generator
-<br>
 Convert those boring plain text readmes to GitHub markdown automagically.
-<br>
 ##Usage
-<br>
-First, to install any dependencies, simply type the following:
-<br>
-<code>pip install -r requirements.txt</code>
-<br>
-Then, run <code>python converter.py</code> (within a GitHub repository's directory),
-<br>
-and the script will automagically find your README.md and place the completed
-<br>
-file in OUTPUT.md.
-<br>
-Use the <code>-l</code> argument to include a list of languages used in the
-<br>
-README.md file, along with how many bits were written in that language.
-<br>
-Use the <code>-c</code> argument to include a list of repository contributors
-<br>
-in the README.md file.
-<br>
-Markdown Linebreaks are inserted wherever a "\n" exists in the text file.
-<br>
-Lines that end with a colon and have a blank padding line below will become markdown headings.
-<br>
+Install the dependencies by typing the following: `pip install -r requirements.txt`. Then, run `python converter.py` (within a GitHub repository's directory), and the script will automagically find your README.md and place the converted file in OUTPUT.md.
+###Arguments
+| Argument | Function                                                                                                                              |
+|----------|---------------------------------------------------------------------------------------------------------------------------------------|
+| -l       | Add language information to the README. Added to the end of the file (before contributor data if applicable) unless "BEGIN READMELANG" and "END READMELANG" comment tags are present. |
+| -c       | Add contributor information to the README. Added to the end of the file unless "BEGIN READMECONTRIB" and "END READMECONTRIB" comment tags are present.                                    |
+| -f       | Fast-forward and do not confirm README.md overwrite. A backup is still made in README.backup.                                         |
+- Markdown linebreaks are inserted wherever a "\n" exists in the text file.
+- Lines that end with a colon and have a blank padding line below will become markdown headings.
 This readme was generated with the script!
-<br>
-Test to see if the find functionality works:<a href=https://github.com/sgreene570/readme-generator/blob/master/converter.py#L25>api</a>
-<br>
-Putting words in underscores tells the script to find the occurrence of the word
-<br>
-in the repository and return the URL to that specific line of code.
-<br>
-<!--BEGIN READMELANG--><br>
+It also has a code find functionality: [api](https://github.com/sgreene570/readme-generator/blob/master/converter.py#L25). Putting words in underscores tells the script to find the occurrence of the word in the repository and return the URL to that specific line of code.
 
-<br>
+<!--BEGIN READMELANG-->
 ##Languages Used
-<br>
-<ul>
-<li>Python (100.0%)</li>
-</ul><!--END READMELANG--><br>
-<!--BEGIN READMECONTRIB--><br>
+- Python (100.0%)
+<!--END READMELANG-->
 
-<br>
+<!--BEGIN READMECONTRIB-->
 ##Contributors
-<br>
-<ul>
-<li><a href='https://github.com/sgreene570'>sgreene570</a></li>
-<li><a href='https://github.com/mattgd'>mattgd</a></li>
-</ul><!--END READMECONTRIB--><br>
+- [sgreene570](https://github.com/sgreene570)
+- [mattgd](https://github.com/mattgd)
+<!--END READMECONTRIB-->

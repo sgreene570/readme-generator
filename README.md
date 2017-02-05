@@ -4,7 +4,11 @@ Convert those boring plain text readmes to GitHub markdown automagically.
 <br>
 ##Usage
 <br>
-Run <code>python3 converter.py</code> (within a GitHub repository's directory),
+First, to install any dependencies, simply type the following:
+<br>
+<code>pip install -r requirements.txt</code>
+<br>
+Then, run <code>python converter.py</code> (within a GitHub repository's directory),
 and the script will automagically find your README.md and place the completed
 file in OUTPUT.md.
 <br>

@@ -8,6 +8,7 @@ import subprocess
 import requests
 import json
 import argparse
+from shutil import copyfile
 
 
 # Project information
@@ -24,6 +25,7 @@ NEWLINE_MD = "<br>"
 HEADING_MD = "#"
 INPUT_FILE = "README.md"
 OUTPUT_FILE = "OUTPUT.md"
+BACKUP_FILE = "README.backup"
 # Character used to enclose code segments where href tags should be inserted
 LINK_CHAR = "_"
 
@@ -37,14 +39,19 @@ def main():
     parser.add_argument("-l", "--lang", action="store_true",
                         help="add repository language information to the readme")
     parser.add_argument("-c", "--contrib", action="store_true",
-                        help="add repository contributor information to the" +
+                        help="add repository contributor information to the " +
                         "readme")
+    parser.add_argument("-f", "--fast", action="store_true",
+                        help="replace the existing README.md without asking" +
+                        " (still creates a README.backup)")
     args = parser.parse_args()
 
     repo_url = get_repo_url()
     api_url = get_api_url(repo_url)
     repo_contents = requests.get(api_url + "/contents")
     raw_files = get_raw_files(repo_contents)    # List of available files
+
+    copyfile(INPUT_FILE, BACKUP_FILE) # Make a backup copy
 
     readmetxt = open(INPUT_FILE, "r")
     readmemd = open(OUTPUT_FILE, "w")
@@ -105,6 +112,18 @@ def main():
 
     # Confirmation message
     print("Formatted README generated to OUTPUT.md.")
+
+    # Fast argument for automatically replacing the old README with the new
+    if args.fast:
+        copyfile(OUTPUT_FILE, INPUT_FILE) # Make a backup copy
+    else:
+        replace = input("Replace the README.md with the new OUTPUT.md contents? "
+                        + "(A backup can be found in README.backup): ")
+        if replace == "y" or replace == "yes":
+            copyfile(OUTPUT_FILE, INPUT_FILE) # Make a backup copy
+            print("README.md replaced with OUTPUT.md contents.")
+        else:
+            print("README.md not replaced with OUTPUT.md contents.")
 
 
 def clean_line(line):
@@ -191,7 +210,7 @@ def get_raw_files(repo_contents):
         if contents[x]["name"] != "README.md":          # Skip the readme
             raw_files.append(contents[x].get("download_url"))
 
-    print(raw_files)
+    # FIXME: print(raw_files)
     return(raw_files)
 
 

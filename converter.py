@@ -34,9 +34,11 @@ def main():
     """
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--lang", "--languages", action="store_true",
-                        help="add repository language information at" +
-                        "the bottom of the readme")
+    parser.add_argument("-l", "--lang", action="store_true",
+                        help="add repository language information to the readme")
+    parser.add_argument("-c", "--contrib", action="store_true",
+                        help="add repository contributor information to the" +
+                        "readme")
     args = parser.parse_args()
 
     repo_url = get_repo_url()
@@ -80,17 +82,65 @@ def main():
         # the markdown file in a text editor
         readmemd.write(NEWLINE)
 
-    # Add repository language info at the bottom if the user used the
-    # language parameter
-    # TODO: Maybe extract to its own method?
+    # Add repository language info at the bottom
+    # if the user used the lang parameter
     if args.lang:
-        languages = requests.get(api_url + "/languages")
-        readmemd.write(str(languages.json()))
+        readmemd.write(get_languages(api_url))
+
+    # Add repository contributor info at the bottom
+    # if the user used the contrib parameter
+    if args.contrib:
+        readmemd.write(get_contributors(api_url))
 
     # Wrap up file IO
     readmemd.flush()
     readmemd.close()
     readmetxt.close()
+
+    # Confirmation message
+    print("Formatted README generated to OUTPUT.md.")
+
+
+def get_languages(api_url):
+    """
+    Return a "Languages Used" header and a list of languages used to add to the
+    and the number of bits of that language to the README file.
+    """
+    languages_str = NEWLINE + "<br>" + NEWLINE + "##Languages Used" + NEWLINE + "<br>"
+    languages = requests.get(api_url + "/languages").json()
+
+    # Create the unordered list element
+    languages_str += NEWLINE + "<ul>"
+    for key, value in languages.items():
+        language = key
+        bits = value
+        languages_str += NEWLINE + "<li>" + str(language) + " (" + str(bits) + " bits)</li>"
+
+    # End the unordered list
+    languages_str += NEWLINE + "</ul>"
+
+    return languages_str
+
+
+def get_contributors(api_url):
+    """
+    Return a "Contributors" header and a list of contributors to add to the
+    README file.
+    """
+    contributors_str = NEWLINE + "<br>" + NEWLINE + "##Contributors" + NEWLINE + "<br>"
+    contributors = requests.get(api_url + "/contributors").json()
+
+    # Create the unordered list element
+    contributors_str += NEWLINE + "<ul>"
+    for x in range(len(contributors)):
+        login = contributors[x]["login"]
+        url = contributors[x]["url"]
+        contributors_str += NEWLINE + "<li>[" + str(login) + "](" + str(url) + ")</li>"
+
+    # End the unordered list
+    contributors_str += NEWLINE + "</ul>"
+
+    return contributors_str
 
 
 def get_repo_url():

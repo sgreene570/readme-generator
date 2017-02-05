@@ -12,6 +12,10 @@ Convert those boring plain text readmes to github markdown automagically
 <br>
 The script will automagically find you README.md and place the completed file in OUTPUT.md.
 <br>
+To install any dependencies, simply type the following:
+<br>
+<code>pip install -r requirements.txt</code>
+<br>
 Currently, it will also put the languages used at the bottom of the readme, along with how many bits were written in that language.
 <br>
 Markdown Linebreaks are inserted wherever a "\n" exists in the text file.

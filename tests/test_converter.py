@@ -29,6 +29,14 @@ def run_tests():
             self.assertIn("##Languages Used\n<br>\n<ul>\n<li>Python", languages)
 
 
+        def test_get_bit_percentage(self):
+            """
+            Test the get_bit_percentage method.
+            """
+            self.assertEqual(converter.get_bit_percentage(1000, 1000), "100.0%")
+            self.assertEqual(converter.get_bit_percentage(564, 1000), "56.4%")
+
+
         def test_get_contributors(self):
             """
             Test the get_languages method with the readme-generator respository.

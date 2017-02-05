@@ -34,67 +34,20 @@ Putting words in underscores tells the script to find the occurrence of the word
 <br>
 in the repository and return the URL to that specific line of code.
 <br>
-##Languages Used
-<br>
-<ul>
-<br>
-<li>Python (6570 bits)</li>
-<br>
-</ul>
-<br>
-##Contributors
-<br>
-<ul>
-<br>
-<li><a href='https://api.github.com/users/sgreene570'>sgreene570</a></li>
-<br>
-</ul>
-<br>
-##Languages Used
-<br>
-<ul>
-<br>
-<li>Python (6580 bits)</li>
-<br>
-</ul>
-<br>
-##Contributors
-<br>
-<ul>
-<br>
-<li><a href='https://api.github.com/users/sgreene570'>sgreene570</a></li>
-<br>
-</ul>
-<br>
-##Languages Used
-<br>
-<ul>
-<br>
-<li>Python (9272 bits)</li>
-<br>
-</ul>
-<br>
-##Contributors
-<br>
-<ul>
-<br>
-<li><a href='https://github.com/sgreene570'>sgreene570</a></li>
-<br>
-<li><a href='https://github.com/mattgd'>mattgd</a></li>
-<br>
-</ul>
-<br>
+<!--BEGIN READMELANG--><br>
 
 <br>
 ##Languages Used
 <br>
 <ul>
-<li>Python (9272 bits)</li>
-</ul>
+<li>Python (100.0%)</li>
+</ul><!--END READMELANG--><br>
+<!--BEGIN READMECONTRIB--><br>
+
 <br>
 ##Contributors
 <br>
 <ul>
 <li><a href='https://github.com/sgreene570'>sgreene570</a></li>
 <li><a href='https://github.com/mattgd'>mattgd</a></li>
-</ul>
+</ul><!--END READMECONTRIB--><br>

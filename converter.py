@@ -4,6 +4,7 @@ Convert those silly plain text readmes to markdown easily!
 """
 
 
+import sys
 import subprocess
 import requests
 import json
@@ -13,7 +14,6 @@ from shutil import copyfile
 
 # Project information
 __author__ = "Stephen Greene, and Matt Dzwonczyk"
-__copyright__ = "Copyright 2017, The Cogent Project"
 __credits__ = ["Stephen Greene", "Matt Dzwonczyk"]
 __license__ = "MIT"
 __version__ = "1.0.0"
@@ -53,9 +53,12 @@ def main():
 
     copyfile(INPUT_FILE, BACKUP_FILE) # Make a backup copy
 
-    readmetxt = open(INPUT_FILE, "r")
+    #readmetxt = open(INPUT_FILE, "r")
+    lines = parse_lines(INPUT_FILE)
     readmemd = open(OUTPUT_FILE, "w")
-    lines = readmetxt.readlines()
+
+    wroteLangBlock = False # Whether a lang block has been generated
+    wroteContribBlock = False # Whether a contrib block has been generated
 
     for x in range(len(lines)):
         line = lines[x]     # Create a copy of the current line
@@ -67,7 +70,7 @@ def main():
                 for file_url in raw_files:
                     line_number = find_in_file(file_url, find_string)
                     if line_number is not -1:
-                        print(line_number)
+                        # print(line_number)
                         # Insert the href link to the correct line number
                         lines[x] = (line[:y-1] + "<a href=" +
                                     repo_contents.json()[raw_files.index(file_url) + 1]
@@ -80,8 +83,17 @@ def main():
 
         # Don't add empty lines
         # TODO: Is this harmful to custom formatting with lots of empty lines?
-        if line == "\n":
+        if not line.strip():
             continue
+
+        if args.lang and "<!--END READMELANG-->" in line:
+            # Write new lang block
+            readmemd.write(get_languages(api_url, False))
+            wroteLangBlock = True
+        elif args.contrib and "<!--END READMECONTRIB-->" in line:
+            # Write new contrib block
+            readmemd.write(get_contributors(api_url, False))
+            wroteContribBlock = True
 
         # Check if line is a heading
         if (x+1 < len(lines) and len(line) > 2 and line[-2] == ":" and
@@ -97,18 +109,18 @@ def main():
 
     # Add repository language info at the bottom
     # if the user used the lang parameter
-    if args.lang:
-        readmemd.write(get_languages(api_url))
+    if not wroteLangBlock and args.lang:
+        readmemd.write(get_languages(api_url, True))
 
     # Add repository contributor info at the bottom
     # if the user used the contrib parameter
-    if args.contrib:
-        readmemd.write(get_contributors(api_url))
+    if not wroteContribBlock and args.contrib:
+        readmemd.write(get_contributors(api_url, True))
 
     # Wrap up file IO
     readmemd.flush()
     readmemd.close()
-    readmetxt.close()
+    #readmetxt.close()
 
     # Confirmation message
     print("Formatted README generated to OUTPUT.md.")
@@ -133,7 +145,38 @@ def clean_line(line):
     return line.replace("<br>", "")
 
 
-def get_languages(api_url):
+def parse_lines(file_name):
+    """
+    Returns a list of all text in file file_name, but with text between the
+    start and end strings removed.
+    """
+    in_file = open(INPUT_FILE, "r")
+    break_strings = [("<!--BEGIN READMELANG-->", "<!--END READMELANG-->"),
+                     ("<!--BEGIN READMECONTRIB-->", "<!--END READMECONTRIB-->")]
+    lines = list()
+
+    inTag = False
+
+    for line in in_file:
+        if not inTag:
+            for start, end in break_strings:
+                if start in line.strip():
+                    line = start
+                    inTag = True
+
+            lines.append(line)
+
+        for start, end in break_strings:
+            if end in line.strip():
+                line = end
+                inTag = False
+                lines.append(line)
+
+    in_file.close()
+    return lines
+
+
+def get_languages(api_url, add_tags):
     """
     Return a "Languages Used" header and a list of languages used to add to the
     and the number of bits of that language to the README file.
@@ -141,20 +184,36 @@ def get_languages(api_url):
     languages_str = NEWLINE + "<br>" + NEWLINE + "##Languages Used" + NEWLINE + "<br>"
     languages = requests.get(api_url + "/languages").json()
 
+    total_bits = 0
+    # Add up total bits for percentages
+    for key, value in languages.items():
+        total_bits += value
+
     # Create the unordered list element
     languages_str += NEWLINE + "<ul>"
     for key, value in languages.items():
         language = key
         bits = value
-        languages_str += NEWLINE + "<li>" + str(language) + " (" + str(bits) + " bits)</li>"
+        languages_str += NEWLINE + "<li>" + str(language) + " (" + get_bit_percentage(bits, total_bits) + ")</li>"
 
     # End the unordered list
     languages_str += NEWLINE + "</ul>"
 
+    # Add the BEGIN/END comment tags
+    if add_tags:
+        languages_str = NEWLINE + "<!--BEGIN READMELANG-->" + languages_str + NEWLINE + "<!--END READMELANG-->"
+
     return languages_str
 
 
-def get_contributors(api_url):
+def get_bit_percentage(bits, total_bits):
+    """
+    Return a formatted percentage of bits out of the total_bits.
+    """
+    return str(bits / total_bits * 100.0) + "%"
+
+
+def get_contributors(api_url, add_tags):
     """
     Return a "Contributors" header and a list of contributors to add to the
     README file.
@@ -170,6 +229,10 @@ def get_contributors(api_url):
 
     # End the unordered list
     contributors_str += NEWLINE + "</ul>"
+
+    # Add the BEGIN/END comment tags
+    if add_tags:
+        contributors_str = NEWLINE + "<!--BEGIN READMECONTRIB-->" + contributors_str + NEWLINE + "<!--END READMECONTRIB-->"
 
     return contributors_str
 
@@ -206,9 +269,12 @@ def get_raw_files(repo_contents):
     contents = repo_contents.json()
     raw_files = list()
     for x in range(len(contents)):
-        # TODO: Should probably check for a KeyError here
-        if contents[x]["name"] != "README.md":          # Skip the readme
-            raw_files.append(contents[x].get("download_url"))
+        try:
+            if contents[x]["name"] != "README.md":          # Skip the readme
+                raw_files.append(contents[x].get("download_url"))
+        except KeyError:
+            print("Call to GitHub API failed.")
+            sys.exit(0)
 
     # FIXME: print(raw_files)
     return(raw_files)
@@ -217,10 +283,9 @@ def get_raw_files(repo_contents):
 def find_in_file(file_url, string):
     """
     Find the location of the given string in the given file URL
-    and return the line number of the string if found
+    and return the line number of the string if found. Returns -1 if the given
+    string is not found.
     """
-    # FIXME: This should probably return -1 if the string is not
-    # found in the file for consistency.
     code = requests.get(file_url).text
     if string in code:
         return code[:code.index(string)].count(NEWLINE) + 1

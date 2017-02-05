@@ -135,7 +135,7 @@ def get_contributors(api_url):
     for x in range(len(contributors)):
         login = contributors[x]["login"]
         url = contributors[x]["url"]
-        contributors_str += NEWLINE + "<li>[" + str(login) + "](" + str(url) + ")</li>"
+        contributors_str += NEWLINE + "<li><a href='" + str(url) +"'>" + str(login) + "</a></li>"
 
     # End the unordered list
     contributors_str += NEWLINE + "</ul>"

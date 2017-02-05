@@ -59,7 +59,7 @@ def main():
                 print(find_string)
                 for file_url in raw_files:
                     line_number = find_in_file(file_url, find_string)
-                    if line_number is not None:
+                    if line_number is not -1:
                         print(line_number)
                         # Insert the href link to the correct line number
                         lines[x] = (line[:y-1] + "<a href=" +
@@ -205,6 +205,8 @@ def find_in_file(file_url, string):
     code = requests.get(file_url).text
     if string in code:
         return code[:code.index(string)].count(NEWLINE) + 1
+    else:
+        return -1;
 
 
 if __name__ == "__main__":

@@ -69,7 +69,13 @@ def main():
                                     line[y+len(find_string)+2:])
                         break
 
-        line = lines[x]     # Update the copied line
+        line = clean_line(lines[x])     # Update the copied line
+
+        # Don't add empty lines
+        # TODO: Is this harmful to custom formatting with lots of empty lines?
+        if line == "\n":
+            continue
+
         # Check if line is a heading
         if (x+1 < len(lines) and len(line) > 2 and line[-2] == ":" and
                 lines[x+1] == NEWLINE):
@@ -99,6 +105,13 @@ def main():
 
     # Confirmation message
     print("Formatted README generated to OUTPUT.md.")
+
+
+def clean_line(line):
+    """
+    Removes existing <br> line breaks from the file so they don't multiply.
+    """
+    return line.replace("<br>", "")
 
 
 def get_languages(api_url):
@@ -133,9 +146,8 @@ def get_contributors(api_url):
     # Create the unordered list element
     contributors_str += NEWLINE + "<ul>"
     for x in range(len(contributors)):
-        login = contributors[x]["login"]
-        url = contributors[x]["url"]
-        contributors_str += NEWLINE + "<li><a href='" + str(url) +"'>" + str(login) + "</a></li>"
+        login = str(contributors[x]["login"])
+        contributors_str += NEWLINE + "<li><a href='https://github.com/" + login +"'>" + login + "</a></li>"
 
     # End the unordered list
     contributors_str += NEWLINE + "</ul>"

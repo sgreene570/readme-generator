@@ -37,7 +37,25 @@ in the repository and return the URL to that specific line of code.
 ##Languages Used
 <br>
 <ul>
+<br>
 <li>Python (6570 bits)</li>
+<br>
+</ul>
+<br>
+##Contributors
+<br>
+<ul>
+<br>
+<li><a href='https://api.github.com/users/sgreene570'>sgreene570</a></li>
+<br>
+</ul>
+<br>
+
+<br>
+##Languages Used
+<br>
+<ul>
+<li>Python (6580 bits)</li>
 </ul>
 <br>
 ##Contributors

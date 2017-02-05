@@ -7,6 +7,7 @@ Convert those silly plain text readmes to markdown easily!
 import subprocess
 import requests
 import json
+import argparse
 
 
 # Project information
@@ -31,6 +32,13 @@ def main():
     """
     Entry point for converter.py.
     """
+    # Parse command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--lang", "--languages", action="store_true",
+                        help="add repository language information at" +
+                        "the bottom of the readme")
+    args = parser.parse_args()
+
     repo_url = get_repo_url()
     api_url = get_api_url(repo_url)
     repo_contents = requests.get(api_url + "/contents")
@@ -72,9 +80,12 @@ def main():
         # the markdown file in a text editor
         readmemd.write(NEWLINE)
 
-    # Add repo language info at the bottom
-    languages = requests.get(api_url + "/languages")
-    readmemd.write(str(languages.json()))
+    # Add repository language info at the bottom if the user used the
+    # language parameter
+    # TODO: Maybe extract to its own method?
+    if args.lang:
+        languages = requests.get(api_url + "/languages")
+        readmemd.write(str(languages.json()))
 
     # Wrap up file IO
     readmemd.flush()
@@ -101,7 +112,7 @@ def get_api_url(repo_url):
     # If the remote url is set for http/https
     elif repo_url[:4] == "http":
         api_url = ("https://api.github.com/repos/" +
-                   repo_url[repo_url.index(".com/") + 5:])
+                   repo_url[repo_url.index(".com/") + 5:-4])
 
     return api_url
 
@@ -114,6 +125,7 @@ def get_raw_files(repo_contents):
     contents = repo_contents.json()
     raw_files = list()
     for x in range(len(contents)):
+        # TODO: Should probably check for a KeyError here
         if contents[x]["name"] != "README.md":          # Skip the readme
             raw_files.append(contents[x].get("download_url"))
 

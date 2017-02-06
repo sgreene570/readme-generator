@@ -153,9 +153,7 @@ def parse_lines(file_name):
     break_strings = [("<!--BEGIN READMELANG-->", "<!--END READMELANG-->"),
                      ("<!--BEGIN READMECONTRIB-->", "<!--END READMECONTRIB-->")]
     lines = list()
-
     inTag = False
-
     for line in in_file:
         if not inTag:
             for start, end in break_strings:

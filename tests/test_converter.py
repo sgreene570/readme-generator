@@ -10,6 +10,7 @@ def run_tests():
             """
             Setup for tests. Not yet implemented.
             """
+            print("here")
             pass
 
         def test_clean_line(self):
@@ -25,7 +26,7 @@ def run_tests():
             Test the get_languages method with the readme-generator respository.
             """
             # FIXME: This is a sketchy test.
-            languages = converter.get_languages("https://api.github.com/repos/sgreene570/readme-generator")
+            languages = converter.get_languages("https://api.github.com/repos/sgreene570/readme-generator", False)
             self.assertIn("##Languages Used\n<br>\n<ul>\n<li>Python", languages)
 
 
@@ -41,7 +42,7 @@ def run_tests():
             """
             Test the get_languages method with the readme-generator respository.
             """
-            contributors = converter.get_contributors("https://api.github.com/repos/sgreene570/readme-generator")
+            contributors = converter.get_contributors("https://api.github.com/repos/sgreene570/readme-generator", False)
             self.assertIn(
                     "\n<br>\n##Contributors\n<br>\n<ul>\n<li><a href='"
                     + "https://github.com/sgreene570'>sgreene570</a></li>\n<li>"

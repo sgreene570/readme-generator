@@ -51,14 +51,14 @@ def main():
     repo_contents = requests.get(api_url + "/contents")
     raw_files = get_raw_files(repo_contents)    # List of available files
 
-    copyfile(INPUT_FILE, BACKUP_FILE) # Make a backup copy
+    copyfile(INPUT_FILE, BACKUP_FILE)    # Make a backup copy
 
-    #readmetxt = open(INPUT_FILE, "r")
+    # Parse the file and remove any info that must be regenerated
     lines = parse_lines(INPUT_FILE)
     readmemd = open(OUTPUT_FILE, "w")
 
-    wroteLangBlock = False # Whether a lang block has been generated
-    wroteContribBlock = False # Whether a contrib block has been generated
+    wroteLangBlock = False    # Whether a lang block has been generated
+    wroteContribBlock = False    # Whether a contrib block has been generated
 
     for x in range(len(lines)):
         line = lines[x]     # Create a copy of the current line
@@ -120,19 +120,18 @@ def main():
     # Wrap up file IO
     readmemd.flush()
     readmemd.close()
-    #readmetxt.close()
 
-    # Confirmation message
+    # Confirmation message for OUTPUT.md generation completetion
     print("Formatted README generated to OUTPUT.md.")
 
     # Fast argument for automatically replacing the old README with the new
     if args.fast:
-        copyfile(OUTPUT_FILE, INPUT_FILE) # Make a backup copy
+        copyfile(OUTPUT_FILE, INPUT_FILE)    # Make a backup copy
     else:
-        replace = input("Replace the README.md with the new OUTPUT.md contents? "
-                        + "(A backup can be found in README.backup): ")
+        replace = input("Replace the README.md with the new OUTPUT.md " +
+                        " contents? (A backup can be found in README.backup): ")
         if replace == "y" or replace == "yes":
-            copyfile(OUTPUT_FILE, INPUT_FILE) # Make a backup copy
+            copyfile(OUTPUT_FILE, INPUT_FILE)    # Make a backup copy
             print("README.md replaced with OUTPUT.md contents.")
         else:
             print("README.md not replaced with OUTPUT.md contents.")
@@ -148,7 +147,7 @@ def clean_line(line):
 def parse_lines(file_name):
     """
     Returns a list of all text in file file_name, but with text between the
-    start and end strings removed.
+    start and end strings (repository-generated data) removed.
     """
     in_file = open(INPUT_FILE, "r")
     break_strings = [("<!--BEGIN READMELANG-->", "<!--END READMELANG-->"),
@@ -210,7 +209,8 @@ def get_bit_percentage(bits, total_bits):
     """
     Return a formatted percentage of bits out of the total_bits.
     """
-    return str(bits / total_bits * 100.0) + "%"
+    percentage = bits / total_bits * 100.0
+    return '{0:.1f}'.format(percentage) + "%"
 
 
 def get_contributors(api_url, add_tags):
@@ -225,7 +225,7 @@ def get_contributors(api_url, add_tags):
     contributors_str += NEWLINE + "<ul>"
     for x in range(len(contributors)):
         login = str(contributors[x]["login"])
-        contributors_str += NEWLINE + "<li><a href='https://github.com/" + login +"'>" + login + "</a></li>"
+        contributors_str += NEWLINE + "<li><a href='https://github.com/" + login + "'>" + login + "</a></li>"
 
     # End the unordered list
     contributors_str += NEWLINE + "</ul>"
@@ -290,7 +290,7 @@ def find_in_file(file_url, string):
     if string in code:
         return code[:code.index(string)].count(NEWLINE) + 1
     else:
-        return -1;
+        return -1
 
 
 if __name__ == "__main__":

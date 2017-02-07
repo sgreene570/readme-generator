@@ -1,4 +1,4 @@
-#readme-generator
+#readme-generator [![Build Status](https://travis-ci.org/sgreene570/readme-generator.svg?branch=master)](https://travis-ci.org/sgreene570/readme-generator)
 Convert those boring plain text readmes to GitHub markdown automagically.
 ##Usage
 Install the dependencies by typing the following: `pip install -r requirements.txt`. Then, run `python converter.py` (within a GitHub repository's directory), and the script will automagically find your README.md and place the converted file in OUTPUT.md.

@@ -272,8 +272,9 @@ def get_raw_files(repo_contents):
         try:
             if contents[x]["name"] != "README.md":          # Skip the readme
                 raw_files.append(contents[x].get("download_url"))
-        except KeyError:
+        except KeyError as e:
             print("Call to GitHub API failed.")
+            print(e)
             sys.exit(0)
 
     # FIXME: print(raw_files)

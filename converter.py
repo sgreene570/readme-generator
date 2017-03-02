@@ -293,7 +293,7 @@ def find_in_file(file_url, string):
         return -1
 
 
-def make_request(api_url, api_ext, github_username);
+def make_request(api_url, api_ext, github_username):
     """
     Function to make api calls with or without authentication.
     Returns request object to be turned into json data with a .json() call

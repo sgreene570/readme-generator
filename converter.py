@@ -9,7 +9,9 @@ import subprocess
 import requests
 import json
 import argparse
+import getpass
 from shutil import copyfile
+from requests.auth import HTTPBasicAuth
 
 
 # Project information
@@ -289,6 +291,21 @@ def find_in_file(file_url, string):
         return code[:code.index(string)].count(NEWLINE) + 1
     else:
         return -1
+
+
+def make_request(api_url, api_ext, github_username);
+    """
+    Function to make api calls with or without authentication.
+    Returns request object to be turned into json data with a .json() call
+    """
+    call_url = api_url + api_ext            #call the api with proper ext.
+    if(github_username is not None):
+        # Make an authenticated request to the github api using the getpass()
+        # function to allow password input via the command line
+        return requests.get(call_url, auth=(github_username, getpass.getpass())
+
+    # Backup call for an anauthenticated request.
+    return requests.get(call_url)
 
 
 if __name__ == "__main__":

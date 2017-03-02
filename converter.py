@@ -277,7 +277,7 @@ def get_raw_files(repo_contents):
             sys.exit(0)
 
     # FIXME: print(raw_files)
-    return(raw_files)
+    return raw_files
 
 
 def find_in_file(file_url, string):
@@ -300,7 +300,7 @@ def make_request(api_url, api_ext, github_username):
     """
     call_url = api_url + api_ext            #call the api with proper ext.
     ret_data = None
-    if(github_username is not None):
+    if github_username is not None:
         # Make an authenticated request to the github api using the getpass()
         # function to allow password input via the command line
         ret_data = requests.get(call_url, auth=(github_username,

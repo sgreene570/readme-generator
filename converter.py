@@ -303,8 +303,8 @@ def make_request(api_url, api_ext, github_username):
     if github_username is not None:
         # Make an authenticated request to the github api using the getpass()
         # function to allow password input via the command line
-        ret_data = requests.get(call_url, auth=(github_username,
-                        getpass.getpass()).json()
+        ret_data = requests.get(call_url, auth=(github_username, 
+                            getpass.getpass())).json()
     else:
         # Backup call for an unauthenticated request.
         ret_data =  requests.get(call_url).json()
